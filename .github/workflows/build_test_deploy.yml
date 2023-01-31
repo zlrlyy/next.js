@@ -71,7 +71,7 @@ jobs:
         run: echo STORE_PATH=$(pnpm store path) >> $GITHUB_OUTPUT
 
       - uses: actions/cache@v3
-        timeout-minutes: 2
+        timeout-minutes: 5
         id: cache-pnpm-store
         with:
           path: ${{ steps.get-store-path.outputs.STORE_PATH }}
@@ -100,7 +100,7 @@ jobs:
         run: echo "WEEK=$(date +%U)" >> $GITHUB_OUTPUT
 
       - uses: actions/cache@v3
-        timeout-minutes: 2
+        timeout-minutes: 5
         id: cache-build
         with:
           path: ./*
@@ -119,7 +119,7 @@ jobs:
       - run: npm i -g pnpm@${PNPM_VERSION}
 
       - uses: actions/cache@v3
-        timeout-minutes: 2
+        timeout-minutes: 5
         id: restore-build
         with:
           path: ./*
@@ -201,7 +201,7 @@ jobs:
         if: ${{needs.build.outputs.docsChange == 'nope'}}
 
       - uses: actions/cache@v3
-        timeout-minutes: 2
+        timeout-minutes: 5
         if: ${{needs.build.outputs.docsChange == 'nope'}}
         id: restore-build
         with:
@@ -224,7 +224,7 @@ jobs:
 
   testUnit:
     name: Test Unit
-    runs-on: ubuntu-latest
+    runs-on: buildjet-2vcpu-ubuntu-2204
     needs: [build, build-native-test]
     timeout-minutes: 10
     env:
@@ -278,7 +278,7 @@ jobs:
         run: sudo ethtool -K eth0 tx off rx off
 
       - uses: actions/cache@v3
-        timeout-minutes: 2
+        timeout-minutes: 5
         if: ${{needs.build.outputs.docsChange == 'nope'}}
         id: restore-build
         with:
@@ -339,7 +339,7 @@ jobs:
         run: sudo ethtool -K eth0 tx off rx off
 
       - uses: actions/cache@v3
-        timeout-minutes: 2
+        timeout-minutes: 5
         if: ${{needs.build.outputs.docsChange == 'nope'}}
         id: restore-build
         with:
@@ -399,7 +399,7 @@ jobs:
         run: sudo ethtool -K eth0 tx off rx off
 
       - uses: actions/cache@v3
-        timeout-minutes: 2
+        timeout-minutes: 5
         if: ${{needs.build.outputs.docsChange == 'nope'}}
         id: restore-build
         with:
@@ -450,7 +450,7 @@ jobs:
         run: sudo ethtool -K eth0 tx off rx off
 
       - uses: actions/cache@v3
-        timeout-minutes: 2
+        timeout-minutes: 5
         if: ${{needs.build.outputs.docsChange == 'nope'}}
         id: restore-build
         with:
@@ -496,7 +496,7 @@ jobs:
         run: sudo ethtool -K eth0 tx off rx off
 
       - uses: actions/cache@v3
-        timeout-minutes: 2
+        timeout-minutes: 5
         if: ${{ needs.build.outputs.docsChange == 'nope' }}
         id: restore-build
         with:
@@ -572,7 +572,7 @@ jobs:
         run: sudo ethtool -K eth0 tx off rx off
 
       - uses: actions/cache@v3
-        timeout-minutes: 2
+        timeout-minutes: 5
         if: ${{needs.build.outputs.docsChange == 'nope'}}
         id: restore-build
         with:
@@ -876,7 +876,7 @@ jobs:
 
       - name: Cache cargo registry
         uses: actions/cache@v3
-        timeout-minutes: 2
+        timeout-minutes: 5
         if: ${{ steps.docs-change.outputs.DOCS_CHANGE == 'nope' }}
         with:
           path: ~/.cargo/registry
@@ -884,7 +884,7 @@ jobs:
 
       - name: Cache cargo index
         uses: actions/cache@v3
-        timeout-minutes: 2
+        timeout-minutes: 5
         if: ${{ steps.docs-change.outputs.DOCS_CHANGE == 'nope' }}
         with:
           path: ~/.cargo/git
@@ -897,7 +897,7 @@ jobs:
       - name: Turbo Cache
         id: turbo-cache
         uses: actions/cache@v3
-        timeout-minutes: 2
+        timeout-minutes: 5
         if: ${{ steps.docs-change.outputs.DOCS_CHANGE == 'nope' }}
         with:
           path: .turbo
