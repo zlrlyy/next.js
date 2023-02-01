@@ -51,12 +51,10 @@ jobs:
       - run: pnpm dlx "playwright@${PLAYWRIGHT_VERSION}" install-deps && pnpm dlx "playwright@${PLAYWRIGHT_VERSION}" install
         name: setup playwright dependencies
 
-      - run: |
-          curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain "${RUST_TOOLCHAIN}" &&
-          rustup target add x86_64-unknown-linux-gnu &&
-          unset CC_x86_64_unknown_linux_gnu && unset CC &&
-          pnpm build-ci &&
-          strip packages/next-swc/native/next-swc.*.node &&
+      - run: curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain "${RUST_TOOLCHAIN}"
+        name: Setup rustup
+
+      - run: rustup target add x86_64-unknown-linux-gnu && unset CC_x86_64_unknown_linux_gnu && unset CC && pnpm build-ci && strip packages/next-swc/native/next-swc.*.node
         name: Build
 
       - run: pnpm lint
