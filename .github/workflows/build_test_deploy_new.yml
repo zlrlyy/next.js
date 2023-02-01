@@ -58,9 +58,6 @@ jobs:
       - run: pnpm dlx "playwright@${PLAYWRIGHT_VERSION}" install-deps && pnpm dlx "playwright@${PLAYWRIGHT_VERSION}" install
         name: setup playwright dependencies
 
-      - run: node scripts/normalize-version-bump.js
-        name: normalize turbo cache
-
       - name: Build in docker
         uses: addnab/docker-run-action@v3
         if: ${{ steps.docs-change.outputs.DOCS_CHANGE == 'nope' }}
