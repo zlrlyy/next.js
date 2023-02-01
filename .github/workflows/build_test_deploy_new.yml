@@ -58,23 +58,13 @@ jobs:
       - run: pnpm dlx "playwright@${PLAYWRIGHT_VERSION}" install-deps && pnpm dlx "playwright@${PLAYWRIGHT_VERSION}" install
         name: setup playwright dependencies
 
-      - name: Build in docker
-        uses: addnab/docker-run-action@v3
-        if: ${{ steps.docs-change.outputs.DOCS_CHANGE == 'nope' }}
-        with:
-          image: ghcr.io/napi-rs/napi-rs/nodejs-rust:stable-2022-10-24-x64
-          options: -e RUST_TOOLCHAIN=${{ env.RUST_TOOLCHAIN }} -e NAPI_CLI_VERSION=${{ env.NAPI_CLI_VERSION }} -e TURBO_VERSION=${{ env.TURBO_VERSION }} -e PNPM_VERSION=${{ env.PNPM_VERSION }} -e TURBO_TOKEN=${{ env.TURBO_TOKEN }} -e TURBO_TEAM=${{ env.TURBO_TEAM }} -e TURBO_REMOTE_ONLY=${{ env.TURBO_REMOTE_ONLY }} -v ${{ env.HOME }}/.cargo/git:/root/.cargo/git -v ${{ env.HOME }}/.cargo/registry:/root/.cargo/registry -v ${{ github.workspace }}:/build -w /build
-          run: |
-            set -e &&
-            rustup toolchain install "${RUST_TOOLCHAIN}" &&
-            rustup default "${RUST_TOOLCHAIN}" &&
-            rustup target add x86_64-unknown-linux-gnu &&
-            npm i -g "@napi-rs/cli@${NAPI_CLI_VERSION}" "turbo@${TURBO_VERSION}" "pnpm@${PNPM_VERSION}" &&
-            unset CC_x86_64_unknown_linux_gnu && unset CC &&
-            cd /build && ls && pnpm build-ci &&
-            strip packages/next-swc/native/next-swc.*.node &&
-            chmod -R 0777 **/*/.turbo &&
-            chmod -R 0777 packages/*/dist packages/*/native
+      - run: |
+          curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain "${RUST_TOOLCHAIN}" &&
+          rustup target add x86_64-unknown-linux-gnu &&
+          unset CC_x86_64_unknown_linux_gnu && unset CC &&
+          pnpm build-ci &&
+          strip packages/next-swc/native/next-swc.*.node &&
+        name: Build
 
       - run: pnpm lint
         name: Run lint checks
