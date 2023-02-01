@@ -23,7 +23,6 @@ packages/next-env/**/*.d.ts
 test-timings.json
 test/**/out/**
 test/development/basic/hmr/components/parse-error.js
-bench/nested-deps/pages/**/*
-bench/nested-deps/components/**/*
+bench/**/*
 pnpm-lock.yaml
 **/convex/_generated/**

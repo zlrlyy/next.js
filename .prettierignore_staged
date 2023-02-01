@@ -11,3 +11,4 @@ test/development/basic/hmr/components/parse-error.js
 pnpm-lock.yaml
 .github/actions/issue-validator/index.mjs
 **/convex/_generated/**
+bench/**/*
