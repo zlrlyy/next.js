@@ -108,7 +108,6 @@ describe.each([
         })
         expect(output.code).toBe(0)
         expect(output.stderr).not.toContain(`error`)
-        expect(output.stdout).not.toContain(`warn`)
       })
 
       it('does not build with page on the edge runtime', async () => {

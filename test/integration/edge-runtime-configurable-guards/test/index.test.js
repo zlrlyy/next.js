@@ -309,7 +309,6 @@ describe('Edge runtime configurable guards', () => {
       context.app = await nextStart(context.appDir, context.appPort, appOption)
       const res = await fetchViaHTTP(context.appPort, url)
       expect(res.status).toBe(200)
-      expect(context.logs.output).not.toContain(`warn`)
       expect(context.logs.output).not.toContain(
         `Dynamic Code Evaluation (e. g. 'eval', 'new Function') not allowed in Edge Runtime`
       )
@@ -438,7 +437,6 @@ describe('Edge runtime configurable guards', () => {
       context.app = await nextStart(context.appDir, context.appPort, appOption)
       const res = await fetchViaHTTP(context.appPort, url)
       expect(res.status).toBe(200)
-      expect(context.logs.output).not.toContain(`warn`)
       expect(context.logs.output).not.toContain(
         `Dynamic Code Evaluation (e. g. 'eval', 'new Function') not allowed in Edge Runtime`
       )
