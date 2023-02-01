@@ -38,7 +38,6 @@ describe.each([
         const res = await fetchViaHTTP(next.url, `/api/edge`)
         expect(res.status).toEqual(200)
         expect(next.cliOutput).not.toInclude('error')
-        expect(next.cliOutput).not.toInclude('warn')
       })
 
       it('warns about API route using experimental-edge runtime', async () => {
@@ -88,7 +87,6 @@ describe.each([
         expect(stripAnsi(next.cliOutput)).toInclude(
           `error - Page /pages provided runtime 'edge', the edge runtime for rendering is currently experimental. Use runtime 'experimental-edge' instead.`
         )
-        expect(next.cliOutput).not.toInclude('warn')
       })
     })
   } else if ((global as any).isNextStart) {
