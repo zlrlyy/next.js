@@ -45,13 +45,6 @@ jobs:
           # related changes e.g. docs only changes
           fetch-depth: 15
 
-      - name: Check non-docs only change
-        run: echo "DOCS_CHANGE<<EOF" >> $GITHUB_OUTPUT; echo "$(node scripts/run-for-change.js --not --type docs --exec echo 'nope')" >> $GITHUB_OUTPUT; echo 'EOF' >> $GITHUB_OUTPUT
-        id: docs-change
-
-      - run: echo "${{steps.docs-change.outputs.DOCS_CHANGE}}"
-        name: docs change result
-
       - run: pnpm install
         name: install dependencies
 
