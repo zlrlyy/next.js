@@ -80,13 +80,13 @@ jobs:
         name: Run lint checks
 
       - run: NEXT_TEST_MODE=dev node run-tests.js -c 8 --type e2e
-        name: Test E2E (dev) (Node.js ${{ env.NODE_LTS_VERSION }})
+        name: Test E2E (dev) (Node.js LTS)
 
       - run: NEXT_TEST_MODE=start node run-tests.js -c 8 --type e2e
-        name: Test E2E (start) (Node.js ${{ env.NODE_LTS_VERSION }})
+        name: Test E2E (start) (Node.js LTS)
 
       - run: NEXT_TEST_MODE=start node run-tests.js -c 8
-        name: Test Integration (Node.js ${{ env.NODE_LTS_VERSION }})
+        name: Test Integration (Node.js LTS)
 
       - run: pnpm test-browsers
         name: Test Firefox and Safari
@@ -102,10 +102,10 @@ jobs:
         name: print Node.js version
 
       - run: NEXT_TEST_MODE=dev node run-tests.js -c 8 --type e2e
-        name: Test E2E (dev) (Node.js ${{ env.NODE_PREV_VERSION }})
+        name: Test E2E (dev) (Node.js PREV)
 
       - run: NEXT_TEST_MODE=start node run-tests.js -c 8 --type e2e
-        name: Test E2E (start) (Node.js ${{ env.NODE_PREV_VERSION }})
+        name: Test E2E (start) (Node.js PREV)
 
       - run: pnpm test-firefox-ci
-        name: Test Firefox (Node.js ${{ env.NODE_PREV_VERSION }})
+        name: Test Firefox (Node.js PREV)
