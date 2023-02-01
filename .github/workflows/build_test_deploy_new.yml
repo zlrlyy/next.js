@@ -72,7 +72,9 @@ jobs:
             npm i -g "@napi-rs/cli@${NAPI_CLI_VERSION}" "turbo@${TURBO_VERSION}" "pnpm@${PNPM_VERSION}" &&
             unset CC_x86_64_unknown_linux_gnu && unset CC &&
             cd /build && ls && pnpm build-ci &&
-            strip packages/next-swc/native/next-swc.*.node
+            strip packages/next-swc/native/next-swc.*.node &&
+            chmod -R 0777 **/*/.turbo &&
+            chmod -R 0777 packages/*/dist packages/*/native
 
       - run: pnpm lint
         name: Run lint checks
