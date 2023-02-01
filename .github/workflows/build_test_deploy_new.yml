@@ -1,0 +1,106 @@
+on:
+  push:
+    branches: [ijjk/test-buildjet]
+
+name: Build, test, and deploy
+
+env:
+  NAPI_CLI_VERSION: 2.13.3
+  TURBO_VERSION: 1.6.3
+  RUST_TOOLCHAIN: nightly-2022-11-04
+  PNPM_VERSION: 7.24.3
+  PLAYWRIGHT_VERSION: 1.28.1
+  NODE_LTS_VERSION: v18
+  NODE_PREV_VERSION: v16
+
+jobs:
+  test:
+    runs-on: buildjet-16vcpu-ubuntu-2204
+    env:
+      NEXT_TELEMETRY_DISABLED: 1
+      # we build a dev binary for use in CI so skip downloading
+      # canary next-swc binaries in the monorepo
+      NEXT_SKIP_NATIVE_POSTINSTALL: 1
+      TURBO_TEAM: 'vercel'
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_REMOTE_ONLY: 'true'
+    steps:
+      # Start with LTS for build and initial tests
+      - run: curl https://install-node.vercel.app/${ NODE_LTS_VERSION } | FORCE=1 bash
+        name: setup Node.js (${ NODE_LTS_VERSION })
+
+      - run: node -v
+        name: print Node.js version
+
+      - run: npm i -g "pnpm@${PNPM_VERSION}" "@napi-rs/cli@${NAPI_CLI_VERSION}" "turbo@${TURBO_VERSION}"
+        name: install npm packages
+
+      - uses: actions/checkout@v3
+        name: checkout repo
+        with:
+          # we use an arbitrary depth to have some history to check for
+          # related changes e.g. docs only changes
+          fetch-depth: 15
+
+      - name: Check non-docs only change
+        run: echo "DOCS_CHANGE<<EOF" >> $GITHUB_OUTPUT; echo "$(node scripts/run-for-change.js --not --type docs --exec echo 'nope')" >> $GITHUB_OUTPUT; echo 'EOF' >> $GITHUB_OUTPUT
+        id: docs-change
+
+      - run: echo "${{steps.docs-change.outputs.DOCS_CHANGE}}"
+        name: docs change result
+
+      - run: pnpm install
+        name: install dependencies
+
+      - run: pnpm dlx "playwright@${PLAYWRIGHT_VERSION}" install-deps && pnpm dlx "playwright@${PLAYWRIGHT_VERSION}" install
+        name: setup playwright dependencies
+
+      - run: node scripts/normalize-version-bump.js
+        name: normalize turbo cache
+
+      - name: Build in docker
+        uses: addnab/docker-run-action@v3
+        if: ${{ steps.docs-change.outputs.DOCS_CHANGE == 'nope' }}
+        with:
+          image: ghcr.io/napi-rs/napi-rs/nodejs-rust:stable-2022-10-24-x64
+          options: -e RUST_TOOLCHAIN=${{ env.RUST_TOOLCHAIN }} -e NAPI_CLI_VERSION=${{ env.NAPI_CLI_VERSION }} -e TURBO_VERSION=${{ env.TURBO_VERSION }} -v ${{ env.HOME }}/.cargo/git:/root/.cargo/git -v ${{ env.HOME }}/.cargo/registry:/root/.cargo/registry -v ${{ github.workspace }}:/build -w /build
+          run: |
+            set -e &&
+            rustup toolchain install "${RUST_TOOLCHAIN}" &&
+            rustup default "${RUST_TOOLCHAIN}" &&
+            rustup target add x86_64-unknown-linux-gnu &&
+            npm i -g "@napi-rs/cli@${NAPI_CLI_VERSION}" "turbo@${TURBO_VERSION}" && if [ ! -f $(dirname $(which yarn))/pnpm ]; then ln -s $(which yarn) $(dirname $(which yarn))/pnpm;fi &&
+            unset CC_x86_64_unknown_linux_gnu && unset CC &&
+            pnpm build-ci &&
+            strip packages/next-swc/native/next-swc.*.node
+
+      - run: pnpm lint
+        name: Run lint checks
+
+      - run: NEXT_TEST_MODE=dev node run-tests.js -c 8 --type e2e
+        name: Test E2E (dev) (Node.js ${ NODE_LTS_VERSION })
+
+      - run: NEXT_TEST_MODE=start node run-tests.js -c 8 --type e2e
+        name: Test E2E (start) (Node.js ${ NODE_LTS_VERSION })
+
+      - run: NEXT_TEST_MODE=start node run-tests.js -c 8
+        name: Test Integration (Node.js ${ NODE_LTS_VERSION })
+
+      - run: pnpm test-browsers
+        name: Test Firefox and Safari
+
+      # Now test prev Node.js for select tests
+      - run: curl https://install-node.vercel.app/${ NODE_PREV_VERSION } | FORCE=1 bash
+        name: setup Node.js (${ NODE_PREV_VERSION })
+
+      - run: node -v
+        name: print Node.js version
+
+      - run: NEXT_TEST_MODE=dev node run-tests.js -c 8 --type e2e
+        name: Test E2E (dev) (Node.js ${ NODE_PREV_VERSION })
+
+      - run: NEXT_TEST_MODE=start node run-tests.js -c 8 --type e2e
+        name: Test E2E (start) (Node.js ${ NODE_PREV_VERSION })
+
+      - run: pnpm test-firefox-ci
+        name: Test Firefox (Node.js ${ NODE_PREV_VERSION })
