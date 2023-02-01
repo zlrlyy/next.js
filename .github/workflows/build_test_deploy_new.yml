@@ -26,8 +26,8 @@ jobs:
       TURBO_REMOTE_ONLY: 'true'
     steps:
       # Start with LTS for build and initial tests
-      - run: curl https://install-node.vercel.app/${ NODE_LTS_VERSION } | FORCE=1 bash
-        name: setup Node.js (${ NODE_LTS_VERSION })
+      - run: curl https://install-node.vercel.app/${{ env.NODE_LTS_VERSION }} | FORCE=1 bash
+        name: setup Node.js (${{ env.NODE_LTS_VERSION }})
 
       - run: node -v
         name: print Node.js version
@@ -63,13 +63,13 @@ jobs:
         if: ${{ steps.docs-change.outputs.DOCS_CHANGE == 'nope' }}
         with:
           image: ghcr.io/napi-rs/napi-rs/nodejs-rust:stable-2022-10-24-x64
-          options: -e RUST_TOOLCHAIN=${{ env.RUST_TOOLCHAIN }} -e NAPI_CLI_VERSION=${{ env.NAPI_CLI_VERSION }} -e TURBO_VERSION=${{ env.TURBO_VERSION }} -v ${{ env.HOME }}/.cargo/git:/root/.cargo/git -v ${{ env.HOME }}/.cargo/registry:/root/.cargo/registry -v ${{ github.workspace }}:/build -w /build
+          options: -e RUST_TOOLCHAIN=${{ env.RUST_TOOLCHAIN }} -e NAPI_CLI_VERSION=${{ env.NAPI_CLI_VERSION }} -e TURBO_VERSION=${{ env.TURBO_VERSION }} -e PNPM_VERSION=${{ env.PNPM_VERSION }} -v ${{ env.HOME }}/.cargo/git:/root/.cargo/git -v ${{ env.HOME }}/.cargo/registry:/root/.cargo/registry -v ${{ github.workspace }}:/build -w /build
           run: |
             set -e &&
             rustup toolchain install "${RUST_TOOLCHAIN}" &&
             rustup default "${RUST_TOOLCHAIN}" &&
             rustup target add x86_64-unknown-linux-gnu &&
-            npm i -g "@napi-rs/cli@${NAPI_CLI_VERSION}" "turbo@${TURBO_VERSION}" && if [ ! -f $(dirname $(which yarn))/pnpm ]; then ln -s $(which yarn) $(dirname $(which yarn))/pnpm;fi &&
+            npm i -g "@napi-rs/cli@${NAPI_CLI_VERSION}" "turbo@${TURBO_VERSION}" "pnpm@${PNPM_VERSION}" &&
             unset CC_x86_64_unknown_linux_gnu && unset CC &&
             pnpm build-ci &&
             strip packages/next-swc/native/next-swc.*.node
@@ -78,29 +78,29 @@ jobs:
         name: Run lint checks
 
       - run: NEXT_TEST_MODE=dev node run-tests.js -c 8 --type e2e
-        name: Test E2E (dev) (Node.js ${ NODE_LTS_VERSION })
+        name: Test E2E (dev) (Node.js ${{ env.NODE_LTS_VERSION }})
 
       - run: NEXT_TEST_MODE=start node run-tests.js -c 8 --type e2e
-        name: Test E2E (start) (Node.js ${ NODE_LTS_VERSION })
+        name: Test E2E (start) (Node.js ${{ env.NODE_LTS_VERSION }})
 
       - run: NEXT_TEST_MODE=start node run-tests.js -c 8
-        name: Test Integration (Node.js ${ NODE_LTS_VERSION })
+        name: Test Integration (Node.js ${{ env.NODE_LTS_VERSION }})
 
       - run: pnpm test-browsers
         name: Test Firefox and Safari
 
       # Now test prev Node.js for select tests
-      - run: curl https://install-node.vercel.app/${ NODE_PREV_VERSION } | FORCE=1 bash
-        name: setup Node.js (${ NODE_PREV_VERSION })
+      - run: curl https://install-node.vercel.app/${{ env.NODE_PREV_VERSION }} | FORCE=1 bash
+        name: setup Node.js (${{ env.NODE_PREV_VERSION }})
 
       - run: node -v
         name: print Node.js version
 
       - run: NEXT_TEST_MODE=dev node run-tests.js -c 8 --type e2e
-        name: Test E2E (dev) (Node.js ${ NODE_PREV_VERSION })
+        name: Test E2E (dev) (Node.js ${{ env.NODE_PREV_VERSION }})
 
       - run: NEXT_TEST_MODE=start node run-tests.js -c 8 --type e2e
-        name: Test E2E (start) (Node.js ${ NODE_PREV_VERSION })
+        name: Test E2E (start) (Node.js ${{ env.NODE_PREV_VERSION }})
 
       - run: pnpm test-firefox-ci
-        name: Test Firefox (Node.js ${ NODE_PREV_VERSION })
+        name: Test Firefox (Node.js ${{ env.NODE_PREV_VERSION }})
