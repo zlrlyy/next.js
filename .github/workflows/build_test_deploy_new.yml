@@ -60,33 +60,39 @@ jobs:
       - run: pnpm lint
         name: Run lint checks
 
-      - run: NEXT_TEST_MODE=dev node run-tests.js -c 30 --type e2e
+      - run: NEXT_TEST_MODE=dev node run-tests.js -c 20 --type e2e
         name: Test E2E (dev) (Node.js LTS)
 
-      - run: NEXT_TEST_MODE=start node run-tests.js -c 30 --type e2e
+      - run: NEXT_TEST_MODE=start node run-tests.js -c 20 --type e2e
         name: Test E2E (start) (Node.js LTS)
 
-      - run: NEXT_TEST_MODE=start node run-tests.js -c 30
+      - run: node run-tests.js -c 20 --type development
+        name: Test dev (Node.js LTS)
+
+      - run: node run-tests.js -c 20 --type production
+        name: Test start (Node.js LTS)
+
+      - run: NEXT_TEST_MODE=start node run-tests.js -c 20
         name: Test Integration (Node.js LTS)
 
       - run: pnpm test-browsers
         name: Test Firefox and Safari
 
-      # Now test prev Node.js for select tests
-      - name: Setup node prev
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_PREV_VERSION }}
-          check-latest: true
+      # Now test prev Node.js for select tests (only for canary)
+      # - name: Setup node prev
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: ${{ env.NODE_PREV_VERSION }}
+      #     check-latest: true
 
-      - run: node -v
-        name: print Node.js version
+      # - run: node -v
+      #   name: print Node.js version
 
-      - run: NEXT_TEST_MODE=dev node run-tests.js -c 30 --type e2e
-        name: Test E2E (dev) (Node.js PREV)
+      # - run: NEXT_TEST_MODE=dev node run-tests.js -c 20 --type e2e
+      #   name: Test E2E (dev) (Node.js PREV)
 
-      - run: NEXT_TEST_MODE=start node run-tests.js -c 30 --type e2e
-        name: Test E2E (start) (Node.js PREV)
+      # - run: NEXT_TEST_MODE=start node run-tests.js -c 20 --type e2e
+      #   name: Test E2E (start) (Node.js PREV)
 
-      - run: pnpm test-firefox-ci
-        name: Test Firefox (Node.js PREV)
+      # - run: pnpm test-firefox-ci
+      #   name: Test Firefox (Node.js PREV)
