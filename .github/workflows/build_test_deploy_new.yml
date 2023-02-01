@@ -28,7 +28,6 @@ jobs:
       # Start with LTS for build and initial tests
       - name: Setup node ${{ env.NODE_LTS_VERSION }}
         uses: actions/setup-node@v3
-        if: ${{needs.build.outputs.docsChange == 'nope'}}
         with:
           node-version: ${{ env.NODE_LTS_VERSION }}
           check-latest: true
@@ -67,7 +66,7 @@ jobs:
         if: ${{ steps.docs-change.outputs.DOCS_CHANGE == 'nope' }}
         with:
           image: ghcr.io/napi-rs/napi-rs/nodejs-rust:stable-2022-10-24-x64
-          options: -e RUST_TOOLCHAIN=${{ env.RUST_TOOLCHAIN }} -e NAPI_CLI_VERSION=${{ env.NAPI_CLI_VERSION }} -e TURBO_VERSION=${{ env.TURBO_VERSION }} -e PNPM_VERSION=${{ env.PNPM_VERSION }} -v ${{ env.HOME }}/.cargo/git:/root/.cargo/git -v ${{ env.HOME }}/.cargo/registry:/root/.cargo/registry -v ${{ github.workspace }}:/build -w /build
+          options: -e RUST_TOOLCHAIN=${{ env.RUST_TOOLCHAIN }} -e NAPI_CLI_VERSION=${{ env.NAPI_CLI_VERSION }} -e TURBO_VERSION=${{ env.TURBO_VERSION }} -e PNPM_VERSION=${{ env.PNPM_VERSION }} -e TURBO_TOKEN=${{ env.TURBO_TOKEN }} -e TURBO_TEAM=${{ env.TURBO_TEAM }} -e TURBO_REMOTE_ONLY=${{ env.TURBO_REMOTE_ONLY }} -v ${{ env.HOME }}/.cargo/git:/root/.cargo/git -v ${{ env.HOME }}/.cargo/registry:/root/.cargo/registry -v ${{ github.workspace }}:/build -w /build
           run: |
             set -e &&
             rustup toolchain install "${RUST_TOOLCHAIN}" &&
@@ -75,7 +74,7 @@ jobs:
             rustup target add x86_64-unknown-linux-gnu &&
             npm i -g "@napi-rs/cli@${NAPI_CLI_VERSION}" "turbo@${TURBO_VERSION}" "pnpm@${PNPM_VERSION}" &&
             unset CC_x86_64_unknown_linux_gnu && unset CC &&
-            pnpm build-ci &&
+            pnpm run-p build build-native-ci &&
             strip packages/next-swc/native/next-swc.*.node
 
       - run: pnpm lint
@@ -96,7 +95,6 @@ jobs:
       # Now test prev Node.js for select tests
       - name: Setup node ${{ env.NODE_PREV_VERSION }}
         uses: actions/setup-node@v3
-        if: ${{needs.build.outputs.docsChange == 'nope'}}
         with:
           node-version: ${{ env.NODE_PREV_VERSION }}
           check-latest: true
