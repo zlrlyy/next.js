@@ -23,15 +23,13 @@
     },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**", "types/**"]
     },
     "dev": {
       "dependsOn": ["^dev"],
       "outputs": ["dist/**"]
     },
-    "typescript": {
-      "outputs": ["types/**"]
-    },
+    "typescript": {},
     "test-pack": {
       "dependsOn": ["^test-pack", "test-pack-global-deps"],
       "outputs": ["packed-*.tgz"],
