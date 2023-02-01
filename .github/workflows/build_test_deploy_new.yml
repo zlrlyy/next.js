@@ -56,6 +56,10 @@ jobs:
       - run: rustup target add x86_64-unknown-linux-gnu && unset CC_x86_64_unknown_linux_gnu && unset CC && pnpm build-ci && strip packages/next-swc/native/next-swc.*.node
         name: Build
 
+      # ensure types are generated
+      - run: pnpm typescript
+        name: Generate types
+
       # TODO: re-enable after fixing potential concurrency issue https://github.com/vercel/next.js/actions/runs/4062773116/jobs/7004366709#step:10:479
       # - run: pnpm lint
       #   name: Run lint checks
@@ -104,6 +108,9 @@ jobs:
 
       - run: pnpm build-ci && strip packages/next-swc/native/next-swc.*.node
         name: Build
+
+      - run: pnpm typescript
+        name: Generate types
 
       - run: node run-tests.js -c 24 --type development
         if: ${{ matrix.type == 'dev' }}
