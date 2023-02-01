@@ -57,8 +57,9 @@ jobs:
       - run: rustup target add x86_64-unknown-linux-gnu && unset CC_x86_64_unknown_linux_gnu && unset CC && pnpm build-ci && strip packages/next-swc/native/next-swc.*.node
         name: Build
 
-      - run: pnpm lint
-        name: Run lint checks
+      # TODO: re-enable after fixing potential concurrency issue https://github.com/vercel/next.js/actions/runs/4062773116/jobs/7004366709#step:10:479
+      # - run: pnpm lint
+      #   name: Run lint checks
 
       - run: NEXT_TEST_MODE=dev node run-tests.js -c 20 --type e2e
         name: Test E2E (dev) (Node.js LTS)
@@ -78,7 +79,7 @@ jobs:
       - run: pnpm test-browsers
         name: Test Firefox and Safari
 
-      # Now test prev Node.js for select tests (only for canary)
+      # Now test prev Node.js for select tests (only for canary potentially on cron/canary release)
       # - name: Setup node prev
       #   uses: actions/setup-node@v3
       #   with:
