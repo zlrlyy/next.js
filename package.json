@@ -11,7 +11,7 @@
     "clean": "pnpm lerna clean -y && pnpm lerna bootstrap && pnpm lerna run clean && pnpm lerna exec 'rm -rf ./dist'",
     "build": "turbo run build",
     "build-native-ci": "turbo run build-native --cache-dir=\".turbo\" -- --target x86_64-unknown-linux-gnu",
-    "build-ci": "run-p build build-native-ci",
+    "build-ci": "run-p build build-native-ci typescript",
     "test-safari-mobile-ci": "BROWSER_NAME=safari DEVICE_NAME='iPhone XR' node run-tests.js test/production/prerender-prefetch/index.test.ts",
     "test-safari-ci": "BROWSER_NAME=safari node run-tests.js test/integration/production/test/index.test.js test/e2e/basepath.test.ts ",
     "test-firefox-ci": "BROWSER_NAME=firefox node run-tests.js test/integration/production/test/index.test.js",

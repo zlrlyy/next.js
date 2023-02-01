@@ -29,7 +29,9 @@
       "dependsOn": ["^dev"],
       "outputs": ["dist/**"]
     },
-    "typescript": {},
+    "typescript": {
+      "outputs": ["types/**"]
+    },
     "test-pack": {
       "dependsOn": ["^test-pack", "test-pack-global-deps"],
       "outputs": ["packed-*.tgz"],

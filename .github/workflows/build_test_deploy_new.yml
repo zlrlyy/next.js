@@ -105,11 +105,11 @@ jobs:
       - run: pnpm build-ci && strip packages/next-swc/native/next-swc.*.node
         name: Build
 
-      - run: node run-tests.js -c 16 --type development
+      - run: node run-tests.js -c 24 --type development
         if: ${{ matrix.type == 'dev' }}
         name: Test dev
 
-      - run: node run-tests.js -c 16 --type production
+      - run: node run-tests.js -c 24 --type production
         if: ${{ matrix.type == 'start' }}
         name: Test start
 
@@ -119,14 +119,14 @@ jobs:
         if: ${{ matrix.type == 'start' }}
         name: Test Firefox and Safari
 
-      - run: NEXT_TEST_MODE=dev node run-tests.js -c 16 --type e2e
+      - run: NEXT_TEST_MODE=dev node run-tests.js -c 24 --type e2e
         if: ${{ matrix.type == 'devE2E' }}
         name: Test dev E2E
 
-      - run: NEXT_TEST_MODE=start node run-tests.js -c 16 --type e2e
+      - run: NEXT_TEST_MODE=start node run-tests.js -c 24 --type e2e
         if: ${{ matrix.type == 'startE2E' }}
         name: Test start E2E
 
-      - run: node run-tests.js -c 16
+      - run: node run-tests.js -c 24
         if: ${{ matrix.type == 'integration' }}
         name: Test integration

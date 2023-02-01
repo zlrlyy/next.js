@@ -27,7 +27,7 @@ describe('absolute assetPrefix with path prefix', () => {
       cdnAccessLog.push(proxyPath)
       const proxyReq = http.request(
         {
-          hostname: 'localhost',
+          hostname: '127.0.0.1',
           port: appPort,
           path: proxyPath,
           method: clientReq.method,
