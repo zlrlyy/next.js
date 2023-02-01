@@ -15,7 +15,7 @@ env:
 
 jobs:
   test:
-    runs-on: buildjet-16vcpu-ubuntu-2204
+    runs-on: buildjet-32vcpu-ubuntu-2204
     env:
       NEXT_TELEMETRY_DISABLED: 1
       # we build a dev binary for use in CI so skip downloading
@@ -61,19 +61,19 @@ jobs:
       # - run: pnpm lint
       #   name: Run lint checks
 
-      - run: NEXT_TEST_MODE=start node run-tests.js -c 16 --type e2e
+      - run: NEXT_TEST_MODE=start node run-tests.js -c 32 --type e2e
         name: Test E2E (start) (Node.js LTS)
 
-      - run: NEXT_TEST_MODE=dev node run-tests.js -c 16 --type e2e
+      - run: NEXT_TEST_MODE=dev node run-tests.js -c 32 --type e2e
         name: Test E2E (dev) (Node.js LTS)
 
-      - run: node run-tests.js -c 16 --type development
+      - run: node run-tests.js -c 32 --type development
         name: Test dev (Node.js LTS)
 
-      - run: node run-tests.js -c 16 --type production
+      - run: node run-tests.js -c 32 --type production
         name: Test start (Node.js LTS)
 
-      - run: NEXT_TEST_MODE=start node run-tests.js -c 16
+      - run: NEXT_TEST_MODE=start node run-tests.js -c 32
         name: Test Integration (Node.js LTS)
 
       - run: pnpm test-browsers
@@ -89,10 +89,10 @@ jobs:
       # - run: node -v
       #   name: print Node.js version
 
-      # - run: NEXT_TEST_MODE=dev node run-tests.js -c 16 --type e2e
+      # - run: NEXT_TEST_MODE=dev node run-tests.js -c 32 --type e2e
       #   name: Test E2E (dev) (Node.js PREV)
 
-      # - run: NEXT_TEST_MODE=start node run-tests.js -c 16 --type e2e
+      # - run: NEXT_TEST_MODE=start node run-tests.js -c 32 --type e2e
       #   name: Test E2E (start) (Node.js PREV)
 
       # - run: pnpm test-firefox-ci
