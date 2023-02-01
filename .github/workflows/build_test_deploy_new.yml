@@ -74,7 +74,7 @@ jobs:
             rustup target add x86_64-unknown-linux-gnu &&
             npm i -g "@napi-rs/cli@${NAPI_CLI_VERSION}" "turbo@${TURBO_VERSION}" "pnpm@${PNPM_VERSION}" &&
             unset CC_x86_64_unknown_linux_gnu && unset CC &&
-            pnpm run-p build build-native-ci &&
+            cd /build && ls && pnpm build-ci &&
             strip packages/next-swc/native/next-swc.*.node
 
       - run: pnpm lint
