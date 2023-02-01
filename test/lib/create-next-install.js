@@ -109,7 +109,11 @@ async function createNextInstall({
         await rootSpan
           .traceChild('run generic install command')
           .traceAsyncFn(async () => {
-            const args = ['install', '--strict-peer-dependencies=false']
+            const args = [
+              'install',
+              '--strict-peer-dependencies=false',
+              '--no-frozen-lockfile',
+            ]
 
             if (process.env.NEXT_TEST_PREFER_OFFLINE === '1') {
               args.push('--prefer-offline')

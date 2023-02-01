@@ -234,25 +234,25 @@ async function main() {
     )
   })
 
-  if (
-    process.platform !== 'win32' &&
-    process.env.NEXT_TEST_MODE !== 'deploy' &&
-    ((testType && testType !== 'unit') || hasIsolatedTests)
-  ) {
-    // for isolated next tests: e2e, dev, prod we create
-    // a starter Next.js install to re-use to speed up tests
-    // to avoid having to run yarn each time
-    console.log('Creating Next.js install for isolated tests')
-    const reactVersion = process.env.NEXT_TEST_REACT_VERSION || 'latest'
-    const testStarter = await createNextInstall({
-      parentSpan: mockTrace(),
-      dependencies: {
-        react: reactVersion,
-        'react-dom': reactVersion,
-      },
-    })
-    process.env.NEXT_TEST_STARTER = testStarter
-  }
+  // if (
+  //   process.platform !== 'win32' &&
+  //   process.env.NEXT_TEST_MODE !== 'deploy' &&
+  //   ((testType && testType !== 'unit') || hasIsolatedTests)
+  // ) {
+  //   // for isolated next tests: e2e, dev, prod we create
+  //   // a starter Next.js install to re-use to speed up tests
+  //   // to avoid having to run yarn each time
+  //   console.log('Creating Next.js install for isolated tests')
+  //   const reactVersion = process.env.NEXT_TEST_REACT_VERSION || 'latest'
+  //   const testStarter = await createNextInstall({
+  //     parentSpan: mockTrace(),
+  //     dependencies: {
+  //       react: reactVersion,
+  //       'react-dom': reactVersion,
+  //     },
+  //   })
+  //   process.env.NEXT_TEST_STARTER = testStarter
+  // }
 
   const sema = new Sema(concurrency, { capacity: testNames.length })
   const children = new Set()
