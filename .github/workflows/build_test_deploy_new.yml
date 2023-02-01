@@ -26,7 +26,7 @@ jobs:
       TURBO_REMOTE_ONLY: 'true'
     steps:
       # Start with LTS for build and initial tests
-      - name: Setup node ${{ env.NODE_LTS_VERSION }}
+      - name: Setup node LTS
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_LTS_VERSION }}
@@ -60,20 +60,20 @@ jobs:
       - run: pnpm lint
         name: Run lint checks
 
-      - run: NEXT_TEST_MODE=dev node run-tests.js -c 8 --type e2e
+      - run: NEXT_TEST_MODE=dev node run-tests.js -c 15 --type e2e
         name: Test E2E (dev) (Node.js LTS)
 
-      - run: NEXT_TEST_MODE=start node run-tests.js -c 8 --type e2e
+      - run: NEXT_TEST_MODE=start node run-tests.js -c 15 --type e2e
         name: Test E2E (start) (Node.js LTS)
 
-      - run: NEXT_TEST_MODE=start node run-tests.js -c 8
+      - run: NEXT_TEST_MODE=start node run-tests.js -c 15
         name: Test Integration (Node.js LTS)
 
       - run: pnpm test-browsers
         name: Test Firefox and Safari
 
       # Now test prev Node.js for select tests
-      - name: Setup node ${{ env.NODE_PREV_VERSION }}
+      - name: Setup node prev
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_PREV_VERSION }}
@@ -82,10 +82,10 @@ jobs:
       - run: node -v
         name: print Node.js version
 
-      - run: NEXT_TEST_MODE=dev node run-tests.js -c 8 --type e2e
+      - run: NEXT_TEST_MODE=dev node run-tests.js -c 15 --type e2e
         name: Test E2E (dev) (Node.js PREV)
 
-      - run: NEXT_TEST_MODE=start node run-tests.js -c 8 --type e2e
+      - run: NEXT_TEST_MODE=start node run-tests.js -c 15 --type e2e
         name: Test E2E (start) (Node.js PREV)
 
       - run: pnpm test-firefox-ci
