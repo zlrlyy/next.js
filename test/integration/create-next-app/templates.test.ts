@@ -51,11 +51,6 @@ const startsWithoutError = async (
 let testVersion
 
 describe('create-next-app templates', () => {
-  if (!true && process.env.NEXT_TEST_JOB) {
-    it('should skip when env is not set', () => {})
-    return
-  }
-
   beforeAll(async () => {
     testVersion = (
       await getPkgPaths({
@@ -255,11 +250,6 @@ describe('create-next-app templates', () => {
 })
 
 describe('create-next-app --experimental-app-dir', () => {
-  if (!true && process.env.NEXT_TEST_JOB) {
-    it('should skip when env is not set', () => {})
-    return
-  }
-
   beforeAll(async () => {
     if (testVersion) return
     testVersion = (

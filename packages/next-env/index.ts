@@ -94,6 +94,7 @@ export function loadEnvConfig(
   if (combinedEnv && !forceReload) {
     return { combinedEnv, loadedEnvFiles: cachedLoadedEnvFiles }
   }
+  // @ts-ignore ProcsssEnv type is more strict
   process.env = Object.assign({}, initialEnv)
   previousLoadedEnvFiles = cachedLoadedEnvFiles
   cachedLoadedEnvFiles = []
