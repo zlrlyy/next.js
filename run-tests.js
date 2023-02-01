@@ -8,7 +8,6 @@ const fetch = vercelFetch(nodeFetch)
 const { promisify } = require('util')
 const { Sema } = require('async-sema')
 const { spawn, exec: execOrig } = require('child_process')
-const { createNextInstall } = require('./test/lib/create-next-install')
 const glob = promisify(_glob)
 const exec = promisify(execOrig)
 
@@ -33,11 +32,6 @@ const testFilters = {
   production: 'production/',
   development: 'development/',
 }
-
-const mockTrace = () => ({
-  traceAsyncFn: (fn) => fn(mockTrace()),
-  traceChild: () => mockTrace(),
-})
 
 // which types we have configured to run separate
 const configuredTestTypes = Object.values(testFilters)
@@ -227,12 +221,6 @@ async function main() {
   }
 
   console.log('Running tests:', '\n', ...testNames.map((name) => `${name}\n`))
-
-  const hasIsolatedTests = testNames.some((test) => {
-    return configuredTestTypes.some(
-      (type) => type !== testFilters.unit && test.startsWith(`test/${type}`)
-    )
-  })
 
   // if (
   //   process.platform !== 'win32' &&
