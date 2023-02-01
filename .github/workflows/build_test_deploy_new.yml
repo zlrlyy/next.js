@@ -26,8 +26,12 @@ jobs:
       TURBO_REMOTE_ONLY: 'true'
     steps:
       # Start with LTS for build and initial tests
-      - run: curl https://install-node.vercel.app/${{ env.NODE_LTS_VERSION }} | FORCE=1 bash
-        name: setup Node.js (${{ env.NODE_LTS_VERSION }})
+      - name: Setup node ${{ env.NODE_LTS_VERSION }}
+        uses: actions/setup-node@v3
+        if: ${{needs.build.outputs.docsChange == 'nope'}}
+        with:
+          node-version: ${{ env.NODE_LTS_VERSION }}
+          check-latest: true
 
       - run: node -v
         name: print Node.js version
@@ -90,8 +94,12 @@ jobs:
         name: Test Firefox and Safari
 
       # Now test prev Node.js for select tests
-      - run: curl https://install-node.vercel.app/${{ env.NODE_PREV_VERSION }} | FORCE=1 bash
-        name: setup Node.js (${{ env.NODE_PREV_VERSION }})
+      - name: Setup node ${{ env.NODE_PREV_VERSION }}
+        uses: actions/setup-node@v3
+        if: ${{needs.build.outputs.docsChange == 'nope'}}
+        with:
+          node-version: ${{ env.NODE_PREV_VERSION }}
+          check-latest: true
 
       - run: node -v
         name: print Node.js version
