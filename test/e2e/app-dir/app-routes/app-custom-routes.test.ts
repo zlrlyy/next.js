@@ -11,8 +11,6 @@ createNextDescribe(
   'app-custom-routes',
   {
     files: __dirname,
-    // TODO-APP: enable after deploy support is added
-    skipDeployment: true,
   },
   ({ next, isNextDev }) => {
     describe('basic fetch request with a response', () => {
@@ -319,6 +317,48 @@ createNextDescribe(
 
         expect(res.status).toEqual(200)
         expect(await res.text()).toContain('hello, world')
+      })
+    })
+
+    describe('streaming', () => {
+      it('should support streaming response using node runtime', async () => {
+        const res = await next.fetch('/advanced/streaming')
+        expect(res.status).toEqual(200)
+
+        const decoder = new TextDecoder()
+        const reader = res.body.getReader()
+        const values = []
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+          values.push(decoder.decode(value))
+        }
+
+        expect(values).toMatchObject([
+          '<p>one</p>',
+          '<p>two</p>',
+          '<p>three</p>',
+        ])
+      })
+
+      it('should support streaming response using edge runtime', async () => {
+        const res = await next.fetch('/advanced/streaming/edge')
+        expect(res.status).toEqual(200)
+
+        const decoder = new TextDecoder()
+        const reader = res.body.getReader()
+        const values = []
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+          values.push(decoder.decode(value))
+        }
+
+        expect(values).toMatchObject([
+          '<p>one</p>',
+          '<p>two</p>',
+          '<p>three</p>',
+        ])
       })
     })
 
