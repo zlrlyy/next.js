@@ -17,3 +17,6 @@ rustflags = [
 
 [target.armv7-unknown-linux-gnueabihf]
 linker = "arm-linux-gnueabihf-gcc"
+
+[target.'cfg(all())']
+rustflags = ["-Aclippy::too_many_arguments"]
