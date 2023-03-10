@@ -37,7 +37,7 @@ testing = { version = "0.31.31" }
 auto-hash-map = { git = "https://github.com/vercel/turbo.git", rev = "df38582da" }
 node-file-trace = { git = "https://github.com/vercel/turbo.git", rev = "df38582da" }
 swc-ast-explorer = { git = "https://github.com/vercel/turbo.git", rev = "df38582da" }
-turbo-malloc = { git = "https://github.com/vercel/turbo.git", rev = "df38582da" }
+turbo-malloc = { git = "https://github.com/vercel/turbo.git", rev = "df38582da", default-feature = false }
 turbo-tasks = { git = "https://github.com/vercel/turbo.git", rev = "df38582da" }
 turbo-tasks-build = { git = "https://github.com/vercel/turbo.git", rev = "df38582da" }
 turbo-tasks-env = { git = "https://github.com/vercel/turbo.git", rev = "df38582da" }
